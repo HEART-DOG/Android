@@ -1,0 +1,54 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="colorPrimary">#008577</color>
+    <color name="colorPrimaryDark">#00574B</color>
+    <color name="colorAccent">#D81B60</color>
+    <color name="colorWhite">#FFFFFF</color>
+    <color name="colorBlack">#000000</color>
+    <color name="colorPeach">#FFFFDAB9</color>
+    <color name="colorButton">#FAFAD2</color>
+    <color name="colorTransparent">#00FFFFFF</color>
+    <color name="colorRed">#FF0000</color>
+
+    <color name="login_form_details">#ccffffff</color>
+    <color name="login_form_details_light">#1affffff</color>
+    <color name="login_form_details_medium">#66ffffff</color>
+    <color name="login_form_details_dark">#000</color>
+    <color name="login_form_details_gray">#D3D3D3</color>
+
+    <color name="middle_gray">#808080</color>
+
+
+    <color name="radio_btn_color">#036</color>
+    <color name="warning_color">#f00</color>
+    <color name="temp_color">#f00</color>
+
+    <color name="transparent">@null</color>
+
+    <!-- AQI color -->
+
+    <color name="good">#00e400</color>
+    <color name="Moderate">#ff0</color>
+    <color name="Unhealthy_for_Sensitive_Groups">#ff7e00</color>
+    <color name="Unhealthy">#f00</color>
+    <color name="Very_Unhealthy">#99004c</color>
+    <color name="Hazardous">#7e0023</color>
+
+
+    <!-- Circle view color-->
+    <color name="circle_view_outside_color">#0D000000</color>
+
+    <!-- My profile color-->
+    <color name="profile_heading">#3797CF</color>
+
+    <!-- AQI History color-->
+    <color name="pm_chart">#07bc13</color>
+    <color name="co_chart">#ffae00</color>
+    <color name="so2_chart">#0b77c4</color>
+    <color name="no2_chart">#ce0e0e</color>
+    <color name="o3_chart">#010e21</color>
+
+    <!-- HR History color-->
+    <color name="hr_chart">#FF6347</color>
+
+</resources>

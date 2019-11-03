@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:showIn="navigation_view">
+
+    <group android:checkableBehavior="single">
+
+        <item
+            android:id="@+id/nav_howToUse"
+            android:icon="@drawable/icon_howtouse"
+            android:title="사용 방법" />
+
+        <item
+            android:id="@+id/nav_info"
+            android:icon="@drawable/ic_info"
+            android:title="가입 정보" />
+
+        <item
+            android:id="@+id/nav_dog_info"
+            android:icon="@drawable/ic_dog"
+            android:title="강아지 등록" />
+
+        <item
+            android:id="@+id/nav_sign_out"
+            android:icon="@drawable/ic_signuot"
+            android:title="로그아웃" />
+    </group>
+
+    <item android:title="강아지 데이터">
+        <menu>
+            <item
+                android:id="@+id/nav_dog_list"
+                android:icon="@drawable/ic_list"
+                android:title="등록 목록" />
+                />
+        </menu>
+    </item>
+
+</menu>
