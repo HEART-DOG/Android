@@ -20,9 +20,11 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageButton;
 import android.widget.ImageView;
 
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -90,11 +92,12 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     String result;
     JSONObject json;
     ImageView heart_icon;
-    Button btn_test;
+    boolean walk = false;
+    Switch switchButton;
+
 
     // ------------------- 강아지 선택 --------------------
     Button dog_select;
-    TextView selected_dog_name;
     String dog_list[];
     String dsn[];
     String empty;
@@ -184,36 +187,49 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         status = v.findViewById(R.id.tv_status);
         heart = v.findViewById(R.id.tv_heart);
 
-        selected_dog_name = v.findViewById(R.id.tv_selected_dog_name);
-        empty = selected_dog_name.getText().toString();
-
+        Log.d("walk", String.valueOf(walk));
         mBluetoothHandler = new Handler() {
             public void handleMessage(android.os.Message msg) {
-                if (msg.what == BT_MESSAGE_READ) {
-                    String readMessage = null;
-                    try {
-                        readMessage = new String((byte[]) msg.obj, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        e.printStackTrace();
+                if (walk == true) {
+                    if (msg.what == BT_MESSAGE_READ) {
+                        String readMessage = null;
+                        try {
+                            readMessage = new String((byte[]) msg.obj, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        String[] value = readMessage.split(",");
+                        Log.d("readMessage", value[0]);
+                        heart.setText(value[0]);
                     }
-                    String[] value = readMessage.split(",");
-                    Log.d("readMessage", value[0]);
-                    heart.setText(value[0]);
+                }
+                else if(walk == false){
+                    if (msg.what == BT_MESSAGE_READ) {
+                        String readMessage = null;
+                        try {
+                            readMessage = new String((byte[]) msg.obj, "UTF-8");
+                        } catch (UnsupportedEncodingException e) {
+                            e.printStackTrace();
+                        }
+                        String[] value = readMessage.split(",");
+                        Log.d("readMessage", value[0]);
+                        heart.setText(value[0]);
 
-                    JSONObject jsonObject = new JSONObject();
-                    try {
-                        jsonObject.put("usn", Values.USN);
-                        jsonObject.put("dsn", Values.DSN);
-                        jsonObject.put("heart_rate", value[0]);
-                    } catch (JSONException e) {
-                        e.printStackTrace();
-                    }
-                    try {
-                        result = new PostJSON().execute("http://caerang2.esllee.com/dog/data_store/heart_rate/process", jsonObject.toString()).get();
-                    } catch (ExecutionException e) {
-                        e.printStackTrace();
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        JSONObject jsonObject = new JSONObject();
+                        try {
+                            jsonObject.put("usn", Values.USN);
+                            jsonObject.put("dsn", Values.DSN);
+                            jsonObject.put("heart_rate", value[0]);
+                        } catch (JSONException e) {
+                            e.printStackTrace();
+                        }
+                        try {
+                            result = new PostJSON().execute("http://caerang2.esllee.com/dog/data_store/heart_rate/process", jsonObject.toString()).get();
+                        } catch (ExecutionException e) {
+                            e.printStackTrace();
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
                     }
                 }
             }
@@ -260,8 +276,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                 public void onClick(DialogInterface dialog, int item) {
                                     Values.DSN = dsn[item];
                                     Log.d("dsn", dsn[item]);
-                                    selected_dog_name.setText(dog_list[item]);
-                                    empty = selected_dog_name.getText().toString();
+                                    dog_select.setText(dog_list[item]);
+                                    empty = dog_select.getText().toString();
                                 }
                             });
                     AlertDialog alert = builder.create();
@@ -276,6 +292,38 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             public void onClick(View v) {
                 onMapReady(mMap);
                 Log.d("location test", String.valueOf(gpsInfo.getLatitude() + " " + gpsInfo.getLongitude()));
+            }
+        });
+
+        switchButton = v.findViewById(R.id.switchButton);
+        switchButton.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                // TODO Auto-generated method stub
+                if (isChecked){
+                    AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
+                    builder.setTitle("산책 모드").setMessage("산책 모드를 활성화 하면 \n심장 데이터가 저장되지 않아요!");
+                    builder.setPositiveButton("확인", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            walk = true;
+                        }
+                    });
+
+                    builder.setNegativeButton("취소", new DialogInterface.OnClickListener(){
+                        @Override
+                        public void onClick(DialogInterface dialog, int id)
+                        {
+                            walk = false;
+                            switchButton.setChecked(false);
+                        }
+                    });
+                    AlertDialog alert = builder.create();
+                    alert.show();
+                }else{
+                    walk = false;
+                }
             }
         });
 
@@ -324,7 +372,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
 
                         heart_icon.setBackgroundColor(Color.TRANSPARENT);
                         GlideDrawableImageViewTarget gifImage = new GlideDrawableImageViewTarget(heart_icon);
-                        Glide.with(getActivity()).load(R.drawable.icon_heart).into(gifImage);
+                        Glide.with(getActivity()).load(R.drawable.heart_icon).into(gifImage);
 
                         if (mThreadConnectedBluetooth != null) {
                             mThreadConnectedBluetooth.write(Values.DSN);
@@ -507,6 +555,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             return  "구름";
         if(str.equals("shower rain"))
             return  "소나기";
+        if(str.equals("light rain"))
+            return "비";
         if(str.equals("rain"))
             return  "비";
         if(str.equals("moderate rain"))

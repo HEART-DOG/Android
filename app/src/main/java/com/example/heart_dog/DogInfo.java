@@ -82,8 +82,9 @@ public class DogInfo extends AppCompatActivity {
                     Log.e("Fail 3", e.toString());
                 }
                 if(result_code.equals("1")){
-                    Toast.makeText(DogInfo.this, "Save your dog Information", Toast.LENGTH_SHORT).show();
+                    Toast.makeText(DogInfo.this, "정보가 저장되었습니다!", Toast.LENGTH_SHORT).show();
                     intent1 =  new Intent(getApplicationContext(), Home.class);
+                    startActivity(intent1);
                 }
                 else {
                     Toast.makeText(DogInfo.this, "Error appeared", Toast.LENGTH_SHORT).show();

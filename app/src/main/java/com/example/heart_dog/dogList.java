@@ -81,11 +81,23 @@ public class dogList extends AppCompatActivity {
         final ListAdapter oAdapter = new ListAdapter(oData);
         m_oListView.setAdapter(oAdapter);
 
-        m_oListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+        m_oListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, final int position, long l) {
+            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
+                TextView title = view.findViewById(R.id.textTitle);
+                Values.DEVICE_LIST = title.getText().toString().trim();
+
                 TextView number = view.findViewById(R.id.tv_dsn);
                 Values.DSN_list = number.getText().toString().trim();
+                Intent chart = new Intent(getApplicationContext(), HeartHistory.class);
+                startActivity(chart);
+            }
+        });
+        m_oListView.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
+            @Override
+            public boolean onItemLongClick(AdapterView<?> arg0, View arg1,int arg2, long arg3) {
+                TextView myDSN = findViewById(R.id.tv_dsn);
+                Values.DSN = myDSN.getText().toString();
 
                 DialogInterface.OnClickListener dialogClickListener = new DialogInterface.OnClickListener() { // dialog 창을 띄움
                     @Override
@@ -93,13 +105,13 @@ public class dogList extends AppCompatActivity {
                         switch (which) {
                             case DialogInterface.BUTTON_POSITIVE: // Dialog 에서 yes 버튼을 누른 경우
                                 try {
-                                    jsonObject.put("dsn", Values.DSN_list);
+                                    jsonObject.put("dsn", Values.DSN);
                                 } catch (JSONException e) {
                                     e.printStackTrace();
                                 }
                                 if (dsn.length() > 0) {
                                     try {
-                                        result = new PostJSON().execute("http://teame-iot.calit2.net/heartdog/sensor/app/deregistration", jsonObject.toString()).get();
+                                        result = new PostJSON().execute("http://caerang2.esllee.com/dog/delete/process", jsonObject.toString()).get();
                                     } catch (ExecutionException e) {
                                         e.printStackTrace();
                                     } catch (Exception e) {
@@ -112,36 +124,25 @@ public class dogList extends AppCompatActivity {
                                         Log.e("Fail 3", e.toString());
                                     }
                                     if (result_code.equals("1")) {
-                                        Toast.makeText(dogList.this, "삭제 완료 !", Toast.LENGTH_SHORT).show();
-                                        oData.remove(position);
+                                        Toast.makeText(dogList.this, "삭제 완료!", Toast.LENGTH_SHORT).show();
                                         Intent intent = getIntent();
                                         finish();
                                         startActivity(intent);
+
+                                    } else if (result_code.equals("1")) {
+                                        Toast.makeText(dogList.this, "삭제 오류", Toast.LENGTH_SHORT).show();
                                     }
                                 }
                                 break;
                             case DialogInterface.BUTTON_NEGATIVE: // dialog 창에서 no 버튼을 누른 경우
-                                Toast.makeText(dogList.this, "Cancel", Toast.LENGTH_LONG).show();
+                                Toast.makeText(dogList.this, "취소", Toast.LENGTH_LONG).show();
                                 break;
                         }
                     }
                 };
                 AlertDialog.Builder builder = new AlertDialog.Builder(dogList.this);
-                builder.setMessage("Really Deregistration device ?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
+                builder.setMessage("정말 삭제하시겠어요 ?").setPositiveButton("Yes", dialogClickListener).setNegativeButton("No", dialogClickListener).show();
                 return true;
-            }
-        });
-
-        m_oListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> adapterView, View view, final int position, long l) {
-                TextView title = view.findViewById(R.id.textTitle);
-                Values.DEVICE_LIST = title.getText().toString().trim();
-
-                TextView number = view.findViewById(R.id.tv_dsn);
-                Values.DSN_list = number.getText().toString().trim();
-                Intent chart = new Intent(getApplicationContext(), HeartHistory.class);
-                startActivity(chart);
             }
         });
     }

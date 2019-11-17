@@ -12,14 +12,14 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.95" />
+        app:layout_constraintGuide_percent="0.9" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_left"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.05" />
+        app:layout_constraintGuide_percent="0.1" />
 
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/gl_top1"
@@ -147,10 +147,10 @@
         android:id="@+id/tv_warning"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:textSize="13dp"
+        android:textSize="12dp"
         android:layout_marginTop="10dp"
         android:textColor="@color/colorRed"
-        android:text="t i p) 강아지가 잘 때 측정하는게 제일 정확해요 !"
+        android:text="TIP ) 강아지가 잘때 측정하는게 제일 정확해요 !"
         app:layout_constraintStart_toStartOf="@id/gl_left"
         app:layout_constraintTop_toBottomOf="@id/tl_size"
         />

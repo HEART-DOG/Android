@@ -53,6 +53,7 @@ public class info extends AppCompatActivity {
         }
         try {
             result = new PostJSON().execute("http://caerang2.esllee.com/user/profile/process", jsonObject.toString()).get();
+            Log.d("result test", result);
         } catch (ExecutionException e) {
             e.printStackTrace();
         } catch (InterruptedException e) {
@@ -82,50 +83,55 @@ public class info extends AppCompatActivity {
         } catch (Exception e) {
             Log.d("Fail 3", e.toString());
         }
-        tv_name.setText(name[0]);
-        tv_phone.setText(phone[0]);
-        tv_dog_name.setText(dog_name[0]);
-        tv_dog_type.setText(dog_type[0]);
-        tv_dog_size.setText(dog_size[0]);
-        tv_dog_gender.setText(dog_gender[0]);
-        tv_dog_birth.setText(dog_birth[0]);
+        if(name == null) {
 
-        index = 0;
+        }
+        else {
+            tv_name.setText(name[0]);
+            tv_phone.setText(phone[0]);
+            tv_dog_name.setText(dog_name[0]);
+            tv_dog_type.setText(dog_type[0]);
+            tv_dog_size.setText(dog_size[0]);
+            tv_dog_gender.setText(dog_gender[0]);
+            tv_dog_birth.setText(dog_birth[0]);
 
-        before.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if(index <= 0) {
+            index = 0;
 
+            before.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if(index <= 0) {
+
+                    }
+                    else {
+                        index = index - 1;
+                        tv_dog_name.setText(dog_name[index]);
+                        tv_dog_type.setText(dog_type[index]);
+                        tv_dog_size.setText(dog_size[index]);
+                        tv_dog_gender.setText(dog_gender[index]);
+                        tv_dog_birth.setText(dog_birth[index]);
+                    }
                 }
-                else {
-                    index = index - 1;
-                    tv_dog_name.setText(dog_name[index]);
-                    tv_dog_type.setText(dog_type[index]);
-                    tv_dog_size.setText(dog_size[index]);
-                    tv_dog_gender.setText(dog_gender[index]);
-                    tv_dog_birth.setText(dog_birth[index]);
-                }
-            }
-        });
+            });
 
-        next.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
+            next.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
 
-                if (index + 1 >= dog_name.length) {
-                    Toast.makeText(info.this, "정보가 없습니다.", Toast.LENGTH_SHORT).show();
+                    if (index + 1 >= dog_name.length) {
+                        Toast.makeText(info.this, "정보가 없습니다.", Toast.LENGTH_SHORT).show();
+                    }
+                    else {
+                        index = index + 1;
+                        tv_dog_name.setText(dog_name[index]);
+                        tv_dog_type.setText(dog_type[index]);
+                        tv_dog_size.setText(dog_size[index]);
+                        tv_dog_gender.setText(dog_gender[index]);
+                        tv_dog_birth.setText(dog_birth[index]);
+                    }
                 }
-                else {
-                    index = index + 1;
-                    tv_dog_name.setText(dog_name[index]);
-                    tv_dog_type.setText(dog_type[index]);
-                    tv_dog_size.setText(dog_size[index]);
-                    tv_dog_gender.setText(dog_gender[index]);
-                    tv_dog_birth.setText(dog_birth[index]);
-                }
-            }
-        });
+            });
+        }
     }
 }
 

@@ -25,13 +25,12 @@
             <ImageButton
                 android:id="@+id/ib_bluetooth"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
+                android:layout_height="wrap_content"
                 android:layout_centerHorizontal="true"
                 android:layout_gravity="right"
+                android:paddingRight="10dp"
                 android:background="@android:color/transparent"
                 android:clickable="true"
-                android:paddingLeft="30dp"
-                android:paddingRight="15dp"
                 android:src="@drawable/bluetooth" />
 
             <ImageButton
