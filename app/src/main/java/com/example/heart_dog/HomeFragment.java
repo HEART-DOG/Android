@@ -8,6 +8,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Color;
+import android.os.Build;
 import android.os.Bundle;
 import androidx.annotation.Nullable;
 import androidx.fragment.app.Fragment;
@@ -46,6 +47,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
+import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Set;
@@ -141,7 +143,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         ibBluetooth.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (empty.equals(" ")) {
+                if (empty.equals("강아지 선택")) {
                     Toast.makeText(getActivity(), "강아지를 선택해주세요.", Toast.LENGTH_LONG).show();
                 } else {
                     Toast.makeText(getActivity(), "연결되면 창이 꺼집니다.", Toast.LENGTH_LONG).show();
@@ -236,6 +238,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         };
 
         dog_select = v.findViewById(R.id.btn_dog_select);
+        empty = dog_select.getText().toString();
         dog_select.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -278,6 +281,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                                     Log.d("dsn", dsn[item]);
                                     dog_select.setText(dog_list[item]);
                                     empty = dog_select.getText().toString();
+                                    Log.d("empty test", empty);
                                 }
                             });
                     AlertDialog alert = builder.create();
@@ -290,6 +294,9 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+
+
                 onMapReady(mMap);
                 Log.d("location test", String.valueOf(gpsInfo.getLatitude() + " " + gpsInfo.getLongitude()));
             }
@@ -359,7 +366,6 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
                 mListPairedDevices = new ArrayList<String>();
                 for (BluetoothDevice device : mPairedDevices) {
                     mListPairedDevices.add(device.getName());
-                    //mListPairedDevices.add(device.getName() + "\n" + device.getAddress());
                 }
                 final CharSequence[] items = mListPairedDevices.toArray(new CharSequence[mListPairedDevices.size()]);
                 mListPairedDevices.toArray(new CharSequence[mListPairedDevices.size()]);
@@ -398,7 +404,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             }
         }
         try {
-            mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BT_UUID);
+            //mBluetoothSocket = mBluetoothDevice.createRfcommSocketToServiceRecord(BT_UUID);
+            mBluetoothSocket = createBluetoothSocket(mBluetoothDevice);
             mBluetoothSocket.connect();
             mThreadConnectedBluetooth = new ConnectedBluetoothThread(mBluetoothSocket);
             mThreadConnectedBluetooth.start();
@@ -593,4 +600,15 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
             return  "icon50";
         return str;
     }
+
+    private BluetoothSocket createBluetoothSocket(BluetoothDevice device) throws IOException {
+        if(Build.VERSION.SDK_INT >= 10){
+            try {
+                final Method m = device.getClass().getMethod("createInsecureRfcommSocketToServiceRecord", new Class[] { UUID.class });
+                return (BluetoothSocket) m.invoke(device, BT_UUID);
+            }
+            catch (Exception e) {
+            }
+        }
+        return device.createRfcommSocketToServiceRecord(BT_UUID); }
 }

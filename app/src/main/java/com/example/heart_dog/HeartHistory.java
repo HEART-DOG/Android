@@ -2,7 +2,9 @@ package com.example.heart_dog;
 
 import androidx.appcompat.app.AppCompatActivity;
 
+import android.app.AlertDialog;
 import android.app.DatePickerDialog;
+import android.content.DialogInterface;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
@@ -175,7 +177,7 @@ public class HeartHistory extends AppCompatActivity implements OnChartGestureLis
                                     DATA[i] = json.getString("heart_rate");
                                     TS[i] = json.getString("datetime");
 
-                                    sum +=  Integer.parseInt(DATA[i]);
+                                    sum += Integer.parseInt(DATA[i]);
 
                                     ts.add(TS[i]);
                                 }
@@ -246,6 +248,32 @@ public class HeartHistory extends AppCompatActivity implements OnChartGestureLis
                                 //  dont forget to refresh the drawing
                                 mChart.invalidate();
 
+                                if(50 < sum && sum < 90) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(HeartHistory.this)
+                                            .setTitle("검진 요망")
+                                            .setMessage("갑상선 기능 저하증, 전해질 불균형 등의\n질병이 의심됩니다. 병원을 방문하세요!")
+                                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+                                }
+                                else if(200 < sum && sum < 300) {
+                                    AlertDialog.Builder builder = new AlertDialog.Builder(HeartHistory.this)
+                                            .setTitle("검진 요망")
+                                            .setMessage("고혈압, 몸안 미세출혈\n질병이 의심됩니다. 병원을 방문하세요!")
+                                            .setPositiveButton("확인", new DialogInterface.OnClickListener() {
+                                                @Override
+                                                public void onClick(DialogInterface dialog, int which) {
+                                                    dialog.dismiss();
+                                                }
+                                            });
+                                    AlertDialog alert = builder.create();
+                                    alert.show();
+                                }
                             } catch (Exception e) {
                                 Log.e("Fail 1", e.toString());
                             }
