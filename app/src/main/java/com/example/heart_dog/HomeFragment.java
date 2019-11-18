@@ -75,6 +75,8 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     Context context;
     double temp_lat = 0.0;
     double temp_lon = 0.0;
+    String LAT;
+    String LNG;
 
     // ------------------- GPS --------------------
     public HomeFragment(Context context) {
@@ -96,6 +98,7 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
     ImageView heart_icon;
     boolean walk = false;
     Switch switchButton;
+    String result_code;
 
 
     // ------------------- 강아지 선택 --------------------
@@ -294,11 +297,40 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         refresh.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (Values.DSN.equals("")) {
+                    Toast.makeText(getActivity(), "위치를 확인할 강아지를 선택해주세요.", Toast.LENGTH_LONG).show();
+                }
+                else {
+                    JSONObject jsonObject = new JSONObject();
+                    try {
+                        jsonObject.put("dsn", Values.DSN);
+                        Log.d("DSN TEST", Values.DSN);
+                    } catch (JSONException e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        result = new PostJSON().execute("http://caerang2.esllee.com/dog/select/gps/process", jsonObject.toString()).get();
+                        Log.d("map from server", result);
+                    } catch (ExecutionException e) {
+                        e.printStackTrace();
+                    } catch (Exception e) {
+                        e.printStackTrace();
+                    }
+                    try {
+                        JSONObject json_data = new JSONObject(result);
+                        result_code = (json_data.optString("result_code"));
+                        LAT = (json_data.optString("latitude"));
+                        LNG = (json_data.optString("longitude"));
 
+                        Values.LAT = Double.parseDouble(LAT);
+                        Values.LNG = Double.parseDouble(LNG);
 
-
-                onMapReady(mMap);
-                Log.d("location test", String.valueOf(gpsInfo.getLatitude() + " " + gpsInfo.getLongitude()));
+                        Log.d("location test", Values.LAT + " " + Values.LNG);
+                    } catch (Exception e) {
+                        Log.e("Fail 3", e.toString());
+                    }
+                    onMapReady(mMap);
+                }
             }
         });
 
@@ -424,32 +456,45 @@ public class HomeFragment extends Fragment implements OnMapReadyCallback {
         MarkerOptions markerOptions;
         LatLng changeLocation;
 
-        if(temp_lat == Values.LAT || temp_lon == Values.LNG){
-            LatLng location = new LatLng(temp_lat, temp_lon);
-
-            mMap.clear();
-            markerOptions = new MarkerOptions()
-                    .position(location)
-                    .title("Your device");
-            mMap.addMarker(markerOptions);
-        }else {
-            if (gpsInfo.getLatitude() != temp_lat || gpsInfo.getLongitude() != temp_lon) {
-                changeLocation = new LatLng(gpsInfo.getLatitude(), gpsInfo.getLongitude());
-                temp_lat = gpsInfo.getLatitude();
-                temp_lon = gpsInfo.getLongitude();
-            } else {
-                changeLocation = new LatLng(Values.LAT, Values.LNG);
-                temp_lat = Values.LAT;
-                temp_lon = Values.LNG;
-            }
+        if(Values.DSN.equals("")) {
+            changeLocation = new LatLng(gpsInfo.getLatitude(), gpsInfo.getLongitude());
             markerOptions = new MarkerOptions()
                     .position(changeLocation)
-                    .title("Your device");
+                    .title("Dog Location");
             mMap.clear();
             mMap.addMarker(markerOptions);
             mMap.animateCamera(CameraUpdateFactory.zoomTo(mMapZoomLevel));
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(changeLocation, mMapZoomLevel));
         }
+        else {
+            changeLocation = new LatLng(Values.LAT, Values.LNG);
+            markerOptions = new MarkerOptions()
+                    .position(changeLocation)
+                    .title("Dog Location");
+            mMap.clear();
+            mMap.addMarker(markerOptions);
+            mMap.animateCamera(CameraUpdateFactory.zoomTo(mMapZoomLevel));
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(changeLocation, mMapZoomLevel));
+        }
+//        if(temp_lat == Values.LAT || temp_lon == Values.LNG){
+//            LatLng location = new LatLng(temp_lat, temp_lon);
+//
+//            mMap.clear();
+//            markerOptions = new MarkerOptions()
+//                    .position(location)
+//                    .title("Your device");
+//            mMap.addMarker(markerOptions);
+//        }else {
+//            if (gpsInfo.getLatitude() != temp_lat || gpsInfo.getLongitude() != temp_lon) {
+//                changeLocation = new LatLng(gpsInfo.getLatitude(), gpsInfo.getLongitude());
+//                temp_lat = gpsInfo.getLatitude();
+//                temp_lon = gpsInfo.getLongitude();
+//            } else {
+//                changeLocation = new LatLng(Values.LAT, Values.LNG);
+//                temp_lat = Values.LAT;
+//                temp_lon = Values.LNG;
+//            }
+        //}
     }
 
     private class ConnectedBluetoothThread extends Thread {

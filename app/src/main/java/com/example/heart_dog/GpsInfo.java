@@ -186,10 +186,7 @@ public class GpsInfo extends Service implements LocationListener {
     public IBinder onBind(Intent arg0) {
         return null;
     }
-    public void onLocationChanged(Location location) {
-        Values.LAT = location.getLatitude();
-        Values.LNG = location.getLongitude();
-    }
+    public void onLocationChanged(Location location) { }
     public void onStatusChanged(String provider, int status, Bundle extras) { }
     public void onProviderEnabled(String provider) { }
     public void onProviderDisabled(String provider) { }
